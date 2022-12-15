@@ -1,0 +1,70 @@
+i = "-"
+
+field = dict.fromkeys([f"{str(j) + str(a)}" for j in range(3) for a in range(3)], i)
+
+
+def place_field(f):
+    print(f)
+    for j in range(3):
+        if j == 0:
+            print("  0 1 2")
+            print(f"{j} {' '.join([f[a] for a in ('00', '01', '02')])}")
+        if j == 1:
+            print(f"{j} {' '.join([f[a] for a in ('10', '11', '12')])}")
+        if j == 2:
+            print(f"{j} {' '.join([f[a] for a in ('20', '21', '22')])}")
+
+
+def player_input(f, player):
+    while True:
+        place = input(f"Ход {player}.Введите номер строки + столбец через пробел:").split()
+        if len(place) != 2:
+            print('Введите две координаты')
+            continue
+        if not(place[0].isdigit() and place[1].isdigit()):
+            print('Введите числа')
+            continue
+        x, y = map(int, place)
+        if not(x >= 0 and x < 3 and y >= 0 and y < 3):
+            print('Вышли из диапазона')
+            continue
+        if f[str(x) + str(y)] != '-':
+            print('Клетка занята')
+            continue
+        f[str(x) + str(y)] = player
+        break
+
+
+def winner(f, player):
+    a = tuple(f.values())
+    c = []
+    for j in range(9):
+        if a[j] == player:
+            c.append(j)
+    print(c)
+    if a.count(player) == 3 and a.count(player) <= 5:
+        if any(x in (0, 1, 2, 3, 4, 5, 6, 7, 8) for x in c):
+            return True
+
+
+def play(f):
+    count = 0
+    while True:
+        place_field(f)
+        if count % 2 == 0:
+            player = 'x'
+        else:
+            player = '0'
+        if count < 9:
+            player_input(f, player)
+
+        elif count == 9:
+            print('Ничья')
+            break
+        if winner(f, player):
+            print(f"Выйграл {player}")
+            break
+        count += 1
+
+
+play(field)
